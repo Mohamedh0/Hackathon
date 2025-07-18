@@ -17,7 +17,6 @@ app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRout
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-=======
 require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
