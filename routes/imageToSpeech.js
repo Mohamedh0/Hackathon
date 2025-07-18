@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     const { base64Image, mimeType } = req.body;
 
     if (!base64Image || !mimeType) {
-      return res.status(400).json({ error: 'base64Image and mimeType are required.' });
+      //return res.status(400).json({ error: 'base64Image and mimeType are required.' });
     }
 
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
