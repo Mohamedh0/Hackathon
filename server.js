@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
@@ -17,3 +18,24 @@ app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRout
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+=======
+require('dotenv').config();
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const imageToSpeechRoute = require('./routes/imageToSpeech');
+
+const app = express();
+const upload = multer({ dest: 'uploads/' });
+
+app.use(express.json());
+
+// Serve outputs folder statically for direct download access
+app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
+
+// Single endpoint for image-to-audio
+app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRoute);
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+>>>>>>> 66813fd12f8f908eff28829ee5ee30a07449dc6a
