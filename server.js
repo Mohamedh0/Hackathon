@@ -1,16 +1,13 @@
 require('dotenv').config();
 const express = require('express');
-const multer = require('multer');
 const path = require('path');
 const imageToSpeechRoute = require('./routes/imageToSpeech');
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+app.use(express.json({ limit: '20mb' })); // Increase limit for large base64
 
-app.use(express.json({ limit: '10mb' }));
-
-// Single endpoint for image-to-audio
-app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRoute);
+// Use image-to-speech route
+app.post('/api/image-to-arabic-audio', imageToSpeechRoute);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
