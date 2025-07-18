@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
@@ -38,4 +37,3 @@ app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRout
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
->>>>>>> 66813fd12f8f908eff28829ee5ee30a07449dc6a
