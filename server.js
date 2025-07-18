@@ -7,7 +7,7 @@ const imageToSpeechRoute = require('./routes/imageToSpeech');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Single endpoint for image-to-audio
 app.post('/api/image-to-arabic-audio', upload.single('image'), imageToSpeechRoute);
