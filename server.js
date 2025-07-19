@@ -1,15 +1,25 @@
 require('dotenv').config();
 const express = require('express');
-const path = require('path');
+const cors = require('cors');
 const imageToSpeechRoute = require('./routes/imageToSpeech');
 
 const app = express();
-const cors = require('cors');
-app.use(cors()); // Allow all origins
-app.use(express.json({ limit: '20mb' })); // Increase limit for large base64
 
-// Use image-to-speech route
-app.post('/api/image-to-arabic-audio', imageToSpeechRoute);
+// CORS Settings - Allow all origins for API requests
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
+// Body Parser Middleware with larger limit for base64 images
+app.use(express.json({ limit: '20mb' }));
+
+// API Route
+app.use('/api/image-to-arabic-audio', imageToSpeechRoute);
+
+// Start Server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(Server running on http://localhost:${PORT}));
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});

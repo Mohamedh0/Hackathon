@@ -1,14 +1,26 @@
+const express = require('express');
+const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const axios = require('axios');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-module.exports = async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const { base64Image, mimeType } = req.body;
+    const { base64Image, mimeType, imageUrl } = req.body;
 
-    if (!base64Image || !mimeType) {
-      //return res.status(400).json({ error: 'base64Image and mimeType are required.' });
+    let imageData = base64Image;
+    let imageMimeType = mimeType;
+
+    // If client sends image URL, fetch it and convert to base64
+    if (imageUrl) {
+      const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      imageData = Buffer.from(response.data).toString('base64');
+      imageMimeType = response.headers['content-type'];
+    }
+
+    if (!imageData || !imageMimeType) {
+      return res.status(400).json({ error: 'base64Image or imageUrl and mimeType are required.' });
     }
 
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
@@ -16,8 +28,8 @@ module.exports = async (req, res) => {
     const geminiResult = await model.generateContent([
       {
         inlineData: {
-          mimeType: mimeType,
-          data: base64Image,
+          mimeType: imageMimeType,
+          data: imageData,
         },
       },
       { text: 'Describe this image in Arabic in one short paragraph.' }
@@ -60,4 +72,6 @@ module.exports = async (req, res) => {
     console.error('Error:', err.response?.data || err.message);
     res.status(500).json({ error: err.response?.data || 'Internal Server Error' });
   }
-};
+});
+
+module.exports = router;
