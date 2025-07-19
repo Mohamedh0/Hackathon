@@ -1,14 +1,16 @@
+const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const axios = require('axios');
 
+const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-module.exports = async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { base64Image, mimeType } = req.body;
 
     if (!base64Image || !mimeType) {
-      //return res.status(400).json({ error: 'base64Image and mimeType are required.' });
+      return res.status(400).json({ error: 'base64Image and mimeType are required.' });
     }
 
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
@@ -53,11 +55,18 @@ module.exports = async (req, res) => {
     res.status(200).json({
       message: 'Success',
       description: arabicText,
-      audioBase64: audioBase64
+      audioBase64
     });
 
   } catch (err) {
     console.error('Error:', err.response?.data || err.message);
     res.status(500).json({ error: err.response?.data || 'Internal Server Error' });
   }
-};
+});
+
+// Optional: Handle OPTIONS for preflight if needed
+router.options('/', (req, res) => {
+  res.sendStatus(200);
+});
+
+module.exports = router;
